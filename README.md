@@ -57,11 +57,13 @@ However, on Zabbix 3.x and greater, media types are configured slightly differen
 * `{ALERT.SUBJECT}`
 * `{ALERT.MESSAGE}`
 
-Finally, an action can then be created on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface to notify the Mircosoft Teams Channel ensuring that the "Subject" is "PROBLEM" for "Default message" and "RECOVERY" should you choose to send a "Recovery message".
+Finally, an action can then be created on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
+Give it a name and click enable to activate the script. Choose "Operations" tab and click New in Operations area. Choose "Run command" in "Operation type" dropdown. In target list add "Current host". Select "Custom script" as type. Select to "Execute on" "Zabbix server (proxy)". In "Command" textarea paste:
 
-Keeping the messages short is probably a good idea; use something such as the following for the contents of each message:
+    /bin/bash /usr/lib/zabbix/alertscripts/teams.sh '{EVENT.SEVERITY}: {HOST.NAME}' '{EVENT.NAME}'
 
-	{TRIGGER.NAME} - {HOSTNAME} ({IPADDRESS})
+Click the "Update"-link and repeat these final steps for "Recovery operations" and "Update operations" tabs.
+Click the "Update" button on the buttom to save your work.
 
 Testing
 -------
@@ -71,7 +73,6 @@ Assuming that you have set a valid Teams web-hook URL within your "teams.sh" fil
 
 More Information
 ----------------
-* [Slack incoming web-hook functionality](https://my.slack.com/services/new/incoming-webhook)
 * [Zabbix 2.2 custom alertscripts documentation](https://www.zabbix.com/documentation/2.2/manual/config/notifications/media/script)
 * [Zabbix 2.4 custom alertscripts documentation](https://www.zabbix.com/documentation/2.4/manual/config/notifications/media/script)
 * [Zabbix 3.x custom alertscripts documentation](https://www.zabbix.com/documentation/3.0/manual/config/notifications/media/script)
