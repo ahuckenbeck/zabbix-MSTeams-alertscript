@@ -25,7 +25,8 @@ This teams.sh script needs to be placed in the `AlertScriptsPath` directory that
 	### Option: AlertScriptsPath
 	AlertScriptsPath=/usr/local/share/zabbix/alertscripts
 	
-	[root@zabbix ~]# chown zabbix:zabbix /usr/local/share/zabbix/alertscripts/teams.sh	
+	[root@zabbix ~]# chown zabbix:zabbix /usr/local/share/zabbix/alertscripts/teams.sh
+	
 	[root@zabbix ~]# ls -lh /usr/local/share/zabbix/alertscripts/teams.sh
 	-rwxr-xr-x 1 zabbix zabbix 1.4K Dec 27 13:48 /usr/local/share/zabbix/alertscripts/teams.sh
 
