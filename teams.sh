@@ -3,18 +3,37 @@
 # Teams incoming web-hook URL and user name
 url='https://outlook.office.com/webhook/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'                # https://dev.outlook.com/Connectors/GetStarted#posting-more-complex-cards
 
+# Zabbix Frontend URL
+zabbixurl='https://zabbix.company.com/zabbix/' # e.g. https://zabbix.company.com/zabbix/  -  don't forget ending slash
+
 curlheader='-H "Content-Type: application/json"'
 agent='-A "zabbix-teams-alertscript / https://github.com/ericoc/zabbix-slack-alertscript"'
 curlmaxtime='-m 60'
 
 ## Values received by this script:
-# Subject = $1 (usually either PROBLEM or RECOVERY)
-# Message = $2 (whatever message the Zabbix action sends, preferably something like "Zabbix server is unreachable for 5 minutes - Zabbix server (127.0.0.1)")
+# Get the Zabbix severity ($1)
+severity="$1"
 
-# Get the Zabbix subject ($2 - hopefully either PROBLEM or RECOVERY)
-subject="$1"
+# The hostname that the event belongs to ($2)
+hostname="$2"
 
-# Change message themeColor depending on the subject - green (RECOVERY), red (HIGH and CRITICAL), yellow (Average and Warning), blue (Info) or grey (for everything else)
+# The event name ($3)
+eventname="$3"
+
+# The event start time ($4) and date ($5)
+time="$4"
+date="$5"
+
+# The event ID ($6)
+eventid="$6"
+
+# The trigger ID ($7)
+triggerid="$7"
+
+# The event status ($8)
+status="$8"
+
+# Change message themeColor depending on the severity - green (RECOVERY), red (HIGH and CRITICAL), yellow (Average), orange (Warning), blue (Info) or grey (for everything else)
 recoversub='^Resolved?'
 highsub='^High?'
 criticalsub='^Critical?'
@@ -22,30 +41,35 @@ warningsub='^Warning?'
 averagesub='^Average?'
 infosub='^Information?'
 
-if [[ "$subject" =~ ${recoversub} ]]; then
-        THEMECOLOR='43EA00'
-elif [[ "$subject" =~ ${highsub} ]]; then
-        THEMECOLOR='ff6629'
-elif [[ "$subject" =~ ${criticalsub} ]]; then
+if [[ "$severity" =~ ${recoversub} ]]; then
+        THEMECOLOR='00ff00'
+elif [[ "$severity" =~ ${highsub} ]]; then
+        THEMECOLOR='ffcccb'
+elif [[ "$severity" =~ ${criticalsub} ]]; then
         THEMECOLOR='ff0000'
-elif [[ "$subject" =~ ${warningsub} ]]; then
-        THEMECOLOR='ddff00'
-elif [[ "$subject" =~ ${averagesub} ]]; then
-        THEMECOLOR='4dff00'
-elif [[ "$subject" =~ ${infosub} ]]; then
-        THEMECOLOR='1500ff'
+elif [[ "$severity" =~ ${warningsub} ]]; then
+        THEMECOLOR='ffa500'
+elif [[ "$severity" =~ ${averagesub} ]]; then
+        THEMECOLOR='ffff0'
+elif [[ "$severity" =~ ${infosub} ]]; then
+        THEMECOLOR='0000ff'
 else
         THEMECOLOR='555555'
 fi
 
-# The message that we want to send to Slack is the "subject" value ($2 / $subject - that we got earlier)
-#  followed by the message that Zabbix actually sent us ($3)
-message="$2"
+# Build the message subject
+subject="${severity}: ${hostname}"
+
+# Build the message text
+message="${eventname}"
+
+# Build event link
+eventlink="<a href='${zabbixurl}tr_events.php?triggerid=${triggerid}&eventid=${eventid}'>${eventid}</a>"
 
 # Build our JSON payload and send it as a POST request to the Slack incoming web-hook URL
 
-payload=\""{\\\"title\\\": \\\"${subject} \\\", \\\"text\\\": \\\"${message} \\\", \\\"themeColor\\\": \\\"${THEMECOLOR}\\\"}"\"
+payload=\""{ \\\"@type\\\": \\\"MessageCard\\\", \\\"@context\\\": \\\"http://schema.org/extensions\\\", \\\"themeColor\\\": \\\"${THEMECOLOR}\\\", \\\"summary\\\": \\\"${subject}\\\", \\\"text\\\": \\\"${message}\\\", \\\"sections\\\": [{ \\\"activityTitle\\\": \\\"${subject}\\\", \\\"facts\\\": [{ \\\"name\\\": \\\"Hostname\\\", \\\"value\\\": \\\"${hostname}\\\" }, { \\\"name\\\": \\\"Event ID\\\", \\\"value\\\": \\\"${eventlink}\\\" }, { \\\"name\\\": \\\"Event Started\\\", \\\"value\\\": \\\"${time} ${date}\\\" }, { \\\"name\\\": \\\"Status\\\", \\\"value\\\": \\\"${status}\\\" }, { \\\"name\\\": \\\"Severity\\\", \\\"value\\\": \\\"${severity}\\\" }], \\\"markdown\\\": false }] }"\"
 
 curldata=$(echo -d "$payload")
 
-eval curl $curlmaxtime $curlheader $curldata $url $agent
+eval curl $curlmaxtime $curlheader $curldata $webhookurl $agent
