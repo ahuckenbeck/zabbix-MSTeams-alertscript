@@ -48,7 +48,7 @@ When logged in to the Zabbix servers web interface with super-administrator priv
 You need to create an action on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
 Give it a name and click enable to activate the script. Choose "Operations" tab and click New in Operations area. Choose "Run command" in "Operation type" dropdown. In target list add "Current host". Select "Custom script" as type. Select to "Execute on" "Zabbix server (proxy)". In "Command" textarea paste:
 
-    /bin/bash /usr/lib/zabbix/alertscripts/teams.sh '{EVENT.SEVERITY}: {HOST.NAME}' '{EVENT.NAME}'
+    /bin/bash /usr/lib/zabbix/alertscripts/teams.sh "{EVENT.SEVERITY}" "{HOST.NAME}" "{EVENT.NAME}" "{EVENT.TIME}" "{EVENT.DATE}" "{EVENT.ID}" "{TRIGGER.ID}" "{EVENT.STATUS}"
 
 Click the "Update"-link and repeat these final steps for "Recovery operations" and "Update operations" tabs.
 Click the "Update" button on the buttom to save your work.
@@ -57,7 +57,7 @@ Testing
 -------
 Assuming that you have set a valid Teams web-hook URL within your "teams.sh" file, you can execute the script manually (as opposed to via Zabbix) from Bash on a terminal:
 
-	$ bash teams.sh 'PROBLEM: This is just a test' 'Oh no! Nothing is wrong!'
+	$ bash teams.sh 'Critical' 'Testhost' 'Nothing is wrong. This is just a test' '00:00:00' '01.01.2020' '1234' '4321' 'PROBLEM'
 
 More Information
 ----------------
