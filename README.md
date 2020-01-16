@@ -43,9 +43,7 @@ https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors
 
 ### Within the Zabbix web interface
 
-When logged in to the Zabbix servers web interface with super-administrator privileges, navigate to the "Administration" tab, access the "Media Types" sub-tab, and click the "Create media type" button.
-
-You need to create an action on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
+When logged in to the Zabbix servers web interface with super-administrator privileges, you need to create an action on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
 Give it a name and click enable to activate the script. Choose "Operations" tab and click New in Operations area. Choose "Run command" in "Operation type" dropdown. In target list add "Current host". Select "Custom script" as type. Select to "Execute on" "Zabbix server (proxy)". In "Command" textarea paste:
 
     /bin/bash /usr/lib/zabbix/alertscripts/teams.sh "{EVENT.SEVERITY}" "{HOST.NAME}" "{EVENT.NAME}" "{EVENT.TIME}" "{EVENT.DATE}" "{EVENT.ID}" "{TRIGGER.ID}" "{EVENT.STATUS}"
