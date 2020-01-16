@@ -25,10 +25,10 @@ This teams.sh script needs to be placed in the `AlertScriptsPath` directory that
 	### Option: AlertScriptsPath
 	AlertScriptsPath=/usr/local/share/zabbix/alertscripts
 	
-	[root@zabbix ~]# chown zabbix:zabbix /usr/local/share/zabbix/alertscripts/teams.sh
+	[root@zabbix ~]# chmod +x /usr/local/share/zabbix/alertscripts/teams.sh
 	
 	[root@zabbix ~]# ls -lh /usr/local/share/zabbix/alertscripts/teams.sh
-	-rwxr-xr-x 1 zabbix zabbix 1.4K Dec 27 13:48 /usr/local/share/zabbix/alertscripts/teams.sh
+	-rwxr-xr-x 1 root root 1.4K Dec 27 13:48 /usr/local/share/zabbix/alertscripts/teams.sh
 
 If you do change `AlertScriptsPath` (or any other values) within `zabbix_server.conf`, a restart of the Zabbix server software is required.
 
@@ -45,20 +45,7 @@ https://docs.microsoft.com/en-us/microsoftteams/platform/webhooks-and-connectors
 
 When logged in to the Zabbix servers web interface with super-administrator privileges, navigate to the "Administration" tab, access the "Media Types" sub-tab, and click the "Create media type" button.
 
-You need to create a media type as follows:
-
-* **Name**: Zabbix
-* **Type**: Script
-* **Script name**: teams.sh
-
-...and ensure that it is enabled before clicking "Save", like so:
-
-However, on Zabbix 3.x and greater, media types are configured slightly differently and you must explicity define the parameters sent to the `teams.sh` script. On Zabbix 4.x, two script parameters should be added as follows:
-
-* `{ALERT.SUBJECT}`
-* `{ALERT.MESSAGE}`
-
-Finally, an action can then be created on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
+You need to create an action on the "Actions" sub-tab of the "Configuration" tab within the Zabbix servers web interface.
 Give it a name and click enable to activate the script. Choose "Operations" tab and click New in Operations area. Choose "Run command" in "Operation type" dropdown. In target list add "Current host". Select "Custom script" as type. Select to "Execute on" "Zabbix server (proxy)". In "Command" textarea paste:
 
     /bin/bash /usr/lib/zabbix/alertscripts/teams.sh '{EVENT.SEVERITY}: {HOST.NAME}' '{EVENT.NAME}'
@@ -70,7 +57,7 @@ Testing
 -------
 Assuming that you have set a valid Teams web-hook URL within your "teams.sh" file, you can execute the script manually (as opposed to via Zabbix) from Bash on a terminal:
 
-	$ bash teams.sh 'PROBLEM' 'Oh no! Something is wrong!'
+	$ bash teams.sh 'PROBLEM: This is just a test' 'Oh no! Nothing is wrong!'
 
 More Information
 ----------------
