@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Teams incoming web-hook URL and user name
-url='https://outlook.office.com/webhook/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'                # https://dev.outlook.com/Connectors/GetStarted#posting-more-complex-cards
+webhookurl='https://outlook.office.com/webhook/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'                # https://dev.outlook.com/Connectors/GetStarted#posting-more-complex-cards
 
 # Zabbix Frontend URL
 zabbixurl='https://zabbix.company.com/zabbix/' # e.g. https://zabbix.company.com/zabbix/  -  don't forget ending slash
